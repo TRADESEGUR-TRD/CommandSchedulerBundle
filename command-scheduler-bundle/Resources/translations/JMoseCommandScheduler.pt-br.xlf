@@ -1,0 +1,160 @@
+<?xml version="1.0"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="en" datatype="plaintext" original="file.ext">
+        <body>
+
+            <!-- Bundle -->
+            <trans-unit id="1">
+                <source>name</source>
+                <target>Symfony's scheduler</target>
+            </trans-unit>
+
+            <trans-unit id="2">
+                <source>dateFormat</source>
+                <target>Y-m-d H:i</target>
+            </trans-unit>
+
+            <trans-unit id="3">
+                <source>list.title</source>
+                <target>Agendar comandos</target>
+            </trans-unit>
+
+            <!-- Actions -->
+            <trans-unit id="100">
+                <source>action.delete</source>
+                <target>Remover</target>
+            </trans-unit>
+            <trans-unit id="101">
+                <source>action.execute</source>
+                <target>Executar</target>
+            </trans-unit>
+            <trans-unit id="102">
+                <source>action.edit</source>
+                <target>Editar</target>
+            </trans-unit>
+            <trans-unit id="103">
+                <source>action.new</source>
+                <target>Novo agendamento</target>
+            </trans-unit>
+            <trans-unit id="104">
+                <source>confirm.delete</source>
+                <target>Deletar permanentemente esta tarefa ?</target>
+            </trans-unit>
+            <trans-unit id="105">
+                <source>confirm.execute</source>
+                <target>Forçar uma execução para esta tarefa ?</target>
+            </trans-unit>
+            <trans-unit id="106">
+                <source>action.unlock</source>
+                <target>Desbloquear tarefa</target>
+            </trans-unit>
+            <trans-unit id="107">
+                <source>confirm.unlock</source>
+                <target>Esta tarefa pode estar em execução. Tem certeza que deseja desbloqueá-la ?</target>
+            </trans-unit>
+            <trans-unit id="108">
+                <source>action.search</source>
+                <target>Procurar</target>
+            </trans-unit>
+            <trans-unit id="109">
+                <source>action.list</source>
+                <target>De volta à lista</target>
+            </trans-unit>
+            <trans-unit id="110">
+                <source>action.cancel</source>
+                <target>Cancelar</target>
+            </trans-unit>
+
+            <!-- Detail  -->
+            <trans-unit id="201">
+                <source>detail.title</source>
+                <target>Agendar comando</target>
+            </trans-unit>
+
+            <trans-unit id="202">
+                <source>detail.name</source>
+                <target>Nome</target>
+            </trans-unit>
+            <trans-unit id="203">
+                <source>detail.command</source>
+                <target>Comando</target>
+            </trans-unit>
+            <trans-unit id="204">
+                <source>detail.arguments</source>
+                <target>Argumentos</target>
+            </trans-unit>
+            <trans-unit id="205">
+                <source>detail.cronExpression</source>
+                <target>Expressão Cron</target>
+            </trans-unit>
+            <trans-unit id="206">
+                <source>detail.logFile</source>
+                <target>Arquivo de saída</target>
+            </trans-unit>
+            <trans-unit id="207">
+                <source>detail.priority</source>
+                <target>Prioridade</target>
+            </trans-unit>
+            <trans-unit id="208">
+                <source>detail.executeImmediately</source>
+                <target>Execute agora</target>
+            </trans-unit>
+            <trans-unit id="209">
+                <source>detail.disabled</source>
+                <target>Desabilitar</target>
+            </trans-unit>
+            <trans-unit id="210">
+                <source>action.save</source>
+                <target>Salvar</target>
+            </trans-unit>
+            <trans-unit id="211">
+                <source>detail.lastExecution</source>
+                <target>Última execução</target>
+            </trans-unit>
+            <trans-unit id="212">
+                <source>detail.lastReturnCode</source>
+                <target>Último código de saída</target>
+            </trans-unit>
+            <trans-unit id="213">
+                <source>detail.actions</source>
+                <target>Ações</target>
+            </trans-unit>
+            <trans-unit id="214">
+                <source>detail.locked</source>
+                <target>Bloqueado</target>
+            </trans-unit>
+
+            <!-- Flashs messages -->
+            <trans-unit id="300">
+                <source>flash.success</source>
+                <target>Agendamento salvo com sucesso.</target>
+            </trans-unit>
+            <trans-unit id="301">
+                <source>flash.deleted</source>
+                <target>Agendamento deletado com sucesso.</target>
+            </trans-unit>
+            <trans-unit id="302">
+                <source>flash.execute</source>
+                <target>Comando será executado no próximo "scheduler:execute".</target>
+            </trans-unit>
+            <trans-unit id="303">
+                <source>flash.unlocked</source>
+                <target>Agendamento desbloqueado com sucesso.</target>
+            </trans-unit>
+
+            <!-- admin label -->
+            <trans-unit id="400">
+                <source>label.null</source>
+                <target>Null</target>
+            </trans-unit>
+            <trans-unit id="401">
+                <source>label.true</source>
+                <target>True</target>
+            </trans-unit>
+            <trans-unit id="402">
+                <source>label.false</source>
+                <target>False</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>
