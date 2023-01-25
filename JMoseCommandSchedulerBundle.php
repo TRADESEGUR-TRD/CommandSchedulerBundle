@@ -12,7 +12,7 @@ class JMoseCommandSchedulerBundle extends Bundle
      *
      * @return JMoseCommandSchedulerExtension
      */
-    public function getContainerExtension()
+    public function getContainerExtension(): object
     {
         $class = $this->getContainerExtensionClass();
 
@@ -22,7 +22,7 @@ class JMoseCommandSchedulerBundle extends Bundle
     /**
      * {@inheritdoc}
      */
-    protected function getContainerExtensionClass()
+    protected function getContainerExtensionClass(): string
     {
         return JMoseCommandSchedulerExtension::class;
     }

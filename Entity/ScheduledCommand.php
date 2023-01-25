@@ -2,6 +2,8 @@
 
 namespace JMose\CommandSchedulerBundle\Entity;
 
+use DateTime;
+
 /**
  * Entity ScheduledCommand.
  *
@@ -12,75 +14,75 @@ class ScheduledCommand
     /**
      * @var int
      */
-    private $id;
+    private int $id;
 
     /**
      * @var string
      */
-    private $name;
+    private string $name;
 
     /**
      * @var string
      */
-    private $command;
+    private string $command;
 
     /**
      * @var string
      */
-    private $arguments;
+    private string $arguments;
 
     /**
      * @see http://www.abunchofutils.com/utils/developer/cron-expression-helper/
      *
      * @var string
      */
-    private $cronExpression;
+    private string $cronExpression;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      */
-    private $lastExecution;
+    private DateTime $lastExecution;
 
     /**
      * @var int
      */
-    private $lastReturnCode;
+    private int $lastReturnCode;
 
     /**
      * Log's file name (without path).
      *
      * @var string
      */
-    private $logFile;
+    private string $logFile;
 
     /**
      * @var int
      */
-    private $priority;
+    private int $priority;
 
     /**
      * If true, command will be execute next time regardless cron expression.
      *
      * @var bool
      */
-    private $executeImmediately;
+    private bool $executeImmediately;
 
     /**
      * @var bool
      */
-    private $disabled;
+    private bool $disabled;
 
     /**
      * @var bool
      */
-    private $locked;
+    private bool $locked;
 
     /**
      * Init new ScheduledCommand.
      */
     public function __construct()
     {
-        $this->setLastExecution(new \DateTime());
+        $this->setLastExecution(new DateTime());
         $this->setLocked(false);
     }
 
@@ -89,7 +91,7 @@ class ScheduledCommand
      *
      * @return int
      */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
@@ -99,9 +101,9 @@ class ScheduledCommand
      *
      * @param $id
      *
-     * @return $this
+     * @return ScheduledCommand
      */
-    public function setId($id)
+    public function setId($id): ScheduledCommand
     {
         $this->id = $id;
 
@@ -113,7 +115,7 @@ class ScheduledCommand
      *
      * @return string
      */
-    public function getName()
+    public function getName():string
     {
         return $this->name;
     }
@@ -125,7 +127,7 @@ class ScheduledCommand
      *
      * @return ScheduledCommand
      */
-    public function setName($name)
+    public function setName($name): ScheduledCommand
     {
         $this->name = $name;
 
@@ -137,7 +139,7 @@ class ScheduledCommand
      *
      * @return string
      */
-    public function getCommand()
+    public function getCommand(): string
     {
         return $this->command;
     }
@@ -149,7 +151,7 @@ class ScheduledCommand
      *
      * @return ScheduledCommand
      */
-    public function setCommand($command)
+    public function setCommand($command): ScheduledCommand
     {
         $this->command = $command;
 
@@ -161,7 +163,7 @@ class ScheduledCommand
      *
      * @return string
      */
-    public function getArguments()
+    public function getArguments(): string
     {
         return $this->arguments;
     }
@@ -173,7 +175,7 @@ class ScheduledCommand
      *
      * @return ScheduledCommand
      */
-    public function setArguments($arguments)
+    public function setArguments($arguments): ScheduledCommand
     {
         $this->arguments = $arguments;
 
@@ -185,7 +187,7 @@ class ScheduledCommand
      *
      * @return string
      */
-    public function getCronExpression()
+    public function getCronExpression(): string
     {
         return $this->cronExpression;
     }
@@ -197,7 +199,7 @@ class ScheduledCommand
      *
      * @return ScheduledCommand
      */
-    public function setCronExpression($cronExpression)
+    public function setCronExpression($cronExpression): ScheduledCommand
     {
         $this->cronExpression = $cronExpression;
 
@@ -207,9 +209,9 @@ class ScheduledCommand
     /**
      * Get lastExecution.
      *
-     * @return \DateTime
+     * @return DateTime
      */
-    public function getLastExecution()
+    public function getLastExecution(): DateTime
     {
         return $this->lastExecution;
     }
@@ -217,11 +219,11 @@ class ScheduledCommand
     /**
      * Set lastExecution.
      *
-     * @param \DateTime $lastExecution
+     * @param DateTime $lastExecution
      *
      * @return ScheduledCommand
      */
-    public function setLastExecution($lastExecution)
+    public function setLastExecution(DateTime $lastExecution): ScheduledCommand
     {
         $this->lastExecution = $lastExecution;
 
@@ -233,7 +235,7 @@ class ScheduledCommand
      *
      * @return string
      */
-    public function getLogFile()
+    public function getLogFile(): string
     {
         return $this->logFile;
     }
@@ -245,7 +247,7 @@ class ScheduledCommand
      *
      * @return ScheduledCommand
      */
-    public function setLogFile($logFile)
+    public function setLogFile($logFile): ScheduledCommand
     {
         $this->logFile = $logFile;
 
@@ -257,7 +259,7 @@ class ScheduledCommand
      *
      * @return int
      */
-    public function getLastReturnCode()
+    public function getLastReturnCode(): int
     {
         return $this->lastReturnCode;
     }
@@ -269,7 +271,7 @@ class ScheduledCommand
      *
      * @return ScheduledCommand
      */
-    public function setLastReturnCode($lastReturnCode)
+    public function setLastReturnCode($lastReturnCode): ScheduledCommand
     {
         $this->lastReturnCode = $lastReturnCode;
 
@@ -281,7 +283,7 @@ class ScheduledCommand
      *
      * @return int
      */
-    public function getPriority()
+    public function getPriority(): int
     {
         return $this->priority;
     }
@@ -293,7 +295,7 @@ class ScheduledCommand
      *
      * @return ScheduledCommand
      */
-    public function setPriority($priority)
+    public function setPriority($priority): ScheduledCommand
     {
         $this->priority = $priority;
 
@@ -305,7 +307,7 @@ class ScheduledCommand
      *
      * @return bool
      */
-    public function isExecuteImmediately()
+    public function isExecuteImmediately(): bool
     {
         return $this->executeImmediately;
     }
@@ -315,7 +317,7 @@ class ScheduledCommand
      *
      * @return bool
      */
-    public function getExecuteImmediately()
+    public function getExecuteImmediately(): bool
     {
         return $this->executeImmediately;
     }
@@ -327,7 +329,7 @@ class ScheduledCommand
      *
      * @return ScheduledCommand
      */
-    public function setExecuteImmediately($executeImmediately)
+    public function setExecuteImmediately($executeImmediately): ScheduledCommand
     {
         $this->executeImmediately = $executeImmediately;
 
@@ -339,7 +341,7 @@ class ScheduledCommand
      *
      * @return bool
      */
-    public function isDisabled()
+    public function isDisabled(): bool
     {
         return $this->disabled;
     }
@@ -349,7 +351,7 @@ class ScheduledCommand
      *
      * @return bool
      */
-    public function getDisabled()
+    public function getDisabled(): bool
     {
         return $this->disabled;
     }
@@ -361,7 +363,7 @@ class ScheduledCommand
      *
      * @return ScheduledCommand
      */
-    public function setDisabled($disabled)
+    public function setDisabled($disabled): ScheduledCommand
     {
         $this->disabled = $disabled;
 
@@ -373,7 +375,7 @@ class ScheduledCommand
      *
      * @return bool
      */
-    public function isLocked()
+    public function isLocked(): bool
     {
         return $this->locked;
     }
@@ -383,7 +385,7 @@ class ScheduledCommand
      *
      * @return bool
      */
-    public function getLocked()
+    public function getLocked(): bool
     {
         return $this->locked;
     }
@@ -393,9 +395,9 @@ class ScheduledCommand
      *
      * @param bool $locked
      *
-     * @return $this
+     * @return ScheduledCommand
      */
-    public function setLocked($locked)
+    public function setLocked($locked): ScheduledCommand
     {
         $this->locked = $locked;
 

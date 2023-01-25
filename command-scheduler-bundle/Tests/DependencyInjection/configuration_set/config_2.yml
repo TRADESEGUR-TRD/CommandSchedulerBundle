@@ -1,5 +1,0 @@
-jmose_command_scheduler:
-    log_path: build
-    included_command_namespaces:
-        - doctrine
-    doctrine_manager: default

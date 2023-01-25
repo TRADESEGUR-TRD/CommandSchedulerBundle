@@ -29,8 +29,9 @@ class CommandChoiceType extends AbstractType
 
     /**
      * @param OptionsResolver $resolver
+     * @return void
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults(
             [
@@ -41,8 +42,9 @@ class CommandChoiceType extends AbstractType
 
     /**
      * {@inheritdoc}
+     * @return string|null
      */
-    public function getParent()
+    public function getParent(): ?string
     {
         return ChoiceType::class;
     }

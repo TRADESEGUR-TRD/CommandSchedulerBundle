@@ -59,8 +59,9 @@ class UnlockCommand extends Command
 
     /**
      * {@inheritdoc}
+     * @return void
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('scheduler:unlock')
@@ -80,8 +81,9 @@ class UnlockCommand extends Command
      *
      * @param InputInterface  $input
      * @param OutputInterface $output
+     * @return void
      */
-    protected function initialize(InputInterface $input, OutputInterface $output)
+    protected function initialize(InputInterface $input, OutputInterface $output): void
     {
         $this->unlockAll = $input->getOption('all');
         $this->scheduledCommandName = $input->getArgument('name');
@@ -100,14 +102,14 @@ class UnlockCommand extends Command
      * @param InputInterface  $input
      * @param OutputInterface $output
      *
-     * @return int|void|null
+     * @return int
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         if (false === $this->unlockAll && null === $this->scheduledCommandName) {
             $output->writeln('Either the name of a scheduled command or the --all option must be set.');
 
-            return 1;
+            return Command::FAILURE;
         }
 
         $repository = $this->em->getRepository(ScheduledCommand::class);
@@ -127,14 +129,14 @@ class UnlockCommand extends Command
                     )
                 );
 
-                return 1;
+                return Command::FAILURE;
             }
             $this->unlock($scheduledCommand, $output);
         }
 
         $this->em->flush();
 
-        return 0;
+        return Command::SUCCESS;
     }
 
     /**
@@ -142,7 +144,7 @@ class UnlockCommand extends Command
      *
      * @return bool true if unlock happened
      */
-    protected function unlock(ScheduledCommand $command, OutputInterface $output)
+    protected function unlock(ScheduledCommand $command, OutputInterface $output): bool
     {
         if (false === $command->isLocked()) {
             $output->writeln(sprintf('Skipping: Scheduled Command "%s" is not locked.', $command->getName()));

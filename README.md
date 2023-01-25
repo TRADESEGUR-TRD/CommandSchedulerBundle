@@ -14,7 +14,7 @@ The following table shows the compatibilities of different versions of the bundl
 
 | Version                                                                              | Symfony          | PHP    |
 |--------------------------------------------------------------------------------------|  --------------- | ------ |
-| [3.1 (master)](https://github.com/gigutradesegur/CommandSchedulerBundle/tree/master) | ^3.4\|^4.3\|^5.4 | >=7.4  |
+| [3.1](https://github.com/gigutradesegur/CommandSchedulerBundle-tree-3.1)             | ^3.4\|^4.3\|^5.4 | >=7.4  |
 | [3.0 (master)](https://github.com/J-Mose/CommandSchedulerBundle/tree/master)         | ^3.4\|^4.3\|^5.0 | >=7.2  |
 | [2.2.x](https://github.com/J-Mose/CommandSchedulerBundle/tree/2.2)                   | ^3.4\|^4.3       | >=7.1  |
 | [2.0.2](https://github.com/J-Mose/CommandSchedulerBundle/tree/v2.0.2) (unmaintained) | ^3.4\|^4.1       | >=5.6  |

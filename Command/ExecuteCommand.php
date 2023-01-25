@@ -62,8 +62,9 @@ class ExecuteCommand extends Command
 
     /**
      * {@inheritdoc}
+     * @return void
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('scheduler:execute')
@@ -78,8 +79,9 @@ class ExecuteCommand extends Command
      *
      * @param InputInterface  $input
      * @param OutputInterface $output
+     * @return void
      */
-    protected function initialize(InputInterface $input, OutputInterface $output)
+    protected function initialize(InputInterface $input, OutputInterface $output): void
     {
         $this->dumpMode = $input->getOption('dump');
 
@@ -97,7 +99,7 @@ class ExecuteCommand extends Command
      *
      * @return int
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $output->writeln('<info>Start : '.($this->dumpMode ? 'Dump' : 'Execute').' all scheduled command</info>');
 
@@ -111,7 +113,7 @@ class ExecuteCommand extends Command
                 ' not found or not writable. You should override `log_path` in your config.yml'.'</error>'
             );
 
-            return 1;
+            return Command::FAILURE;
         }
 
         $commands = $this->em->getRepository(ScheduledCommand::class)->findEnabledCommand();
@@ -155,15 +157,16 @@ class ExecuteCommand extends Command
             $output->writeln('Nothing to do.');
         }
 
-        return 0;
+        return Command::SUCCESS;
     }
 
     /**
      * @param ScheduledCommand $scheduledCommand
      * @param OutputInterface  $output
      * @param InputInterface   $input
+     * @return void
      */
-    private function executeCommand(ScheduledCommand $scheduledCommand, OutputInterface $output, InputInterface $input)
+    private function executeCommand(ScheduledCommand $scheduledCommand, OutputInterface $output, InputInterface $input): void
     {
         //reload command from database before every execution to avoid parallel execution
         $this->em->getConnection()->beginTransaction();

@@ -16,17 +16,18 @@ abstract class BaseController extends AbstractController
     /**
      * @var string
      */
-    private $managerName;
+    private string $managerName;
 
     /**
      * @var ContractsTranslatorInterface|ComponentTranslatorInterface
      */
-    protected $translator;
+    protected TranslatorInterface $translator;
 
     /**
      * @param $managerName string
+     * @return void
      */
-    public function setManagerName($managerName)
+    public function setManagerName($managerName): string
     {
         $this->managerName = $managerName;
     }
@@ -34,7 +35,7 @@ abstract class BaseController extends AbstractController
     /**
      * @param ContractsTranslatorInterface|ComponentTranslatorInterface $translator
      */
-    public function setTranslator($translator)
+    public function setTranslator($translator): TranslatorInterface
     {
         $this->translator = $translator;
     }
@@ -42,7 +43,7 @@ abstract class BaseController extends AbstractController
     /**
      * @return \Doctrine\Common\Persistence\ObjectManager
      */
-    protected function getDoctrineManager()
+    protected function getDoctrineManager(): ObjectManager
     {
         return $this->getDoctrine()->getManager($this->managerName);
     }

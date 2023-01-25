@@ -22,7 +22,7 @@ class ListController extends BaseController
     /**
      * @param $lockTimeout string
      */
-    public function setLockTimeout($lockTimeout)
+    public function setLockTimeout($lockTimeout): void
     {
         $this->lockTimeout = $lockTimeout;
     }
@@ -30,7 +30,7 @@ class ListController extends BaseController
     /**
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function indexAction()
+    public function indexAction(): ?Response
     {
         $scheduledCommands = $this->getDoctrineManager()->getRepository(
             'JMoseCommandSchedulerBundle:ScheduledCommand'
@@ -47,7 +47,7 @@ class ListController extends BaseController
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function removeAction($id)
+    public function removeAction($id): ?Response
     {
         $entityManager = $this->getDoctrineManager();
         $scheduledCommand = $entityManager->getRepository(ScheduledCommand::class)->find($id);
@@ -67,7 +67,7 @@ class ListController extends BaseController
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function toggleAction($id)
+    public function toggleAction($id): ?Response
     {
         $entityManager = $this->getDoctrineManager();
         $scheduledCommand = $entityManager->getRepository(ScheduledCommand::class)->find($id);
@@ -83,7 +83,7 @@ class ListController extends BaseController
      *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function executeAction($id, Request $request)
+    public function executeAction($id, Request $request): ?Response
     {
         $entityManager = $this->getDoctrineManager();
         $scheduledCommand = $entityManager->getRepository(ScheduledCommand::class)->find($id);
@@ -107,7 +107,7 @@ class ListController extends BaseController
      *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function unlockAction($id, Request $request)
+    public function unlockAction($id, Request $request): ?Response
     {
         $entityManager = $this->getDoctrineManager();
         $scheduledCommand = $entityManager->getRepository(ScheduledCommand::class)->find($id);
@@ -132,7 +132,7 @@ class ListController extends BaseController
      *
      * @return JsonResponse
      */
-    public function monitorAction()
+    public function monitorAction(): ?JsonResponse
     {
         $failedCommands = $this->getDoctrineManager()
             ->getRepository(ScheduledCommand::class)

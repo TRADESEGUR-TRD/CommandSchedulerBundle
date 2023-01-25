@@ -3,6 +3,7 @@
 namespace JMose\CommandSchedulerBundle\Command;
 
 use Symfony\Bridge\Doctrine\ManagerRegistry;
+use Doctrine\ORM\EntityManager;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -16,34 +17,34 @@ use Symfony\Component\Console\Output\OutputInterface;
 class MonitorCommand extends Command
 {
     /**
-     * @var \Doctrine\ORM\EntityManager
+     * @var Doctrine\ORM\EntityManager
      */
-    private $em;
+    private EntityManager $em;
 
     /**
      * @var bool
      */
-    private $dumpMode;
+    private bool $dumpMode;
 
     /**
      * @var int|bool Number of seconds after a command is considered as timeout
      */
-    private $lockTimeout;
+    private bool $lockTimeout;
 
     /**
      * @var string|array receiver for statusmail if an error occured
      */
-    private $receiver;
+    private array $receiver;
 
     /**
      * @var string mailSubject subject to be used when sending a mail
      */
-    private $mailSubject;
+    private string $mailSubject;
 
     /**
      * @var bool if true, current command will send mail even if all is ok.
      */
-    private $sendMailIfNoError;
+    private bool $sendMailIfNoError;
 
     /**
      * MonitorCommand constructor.
@@ -74,8 +75,9 @@ class MonitorCommand extends Command
 
     /**
      * {@inheritdoc}
+     * @return void
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('scheduler:monitor')
@@ -88,16 +90,16 @@ class MonitorCommand extends Command
      * @param InputInterface  $input
      * @param OutputInterface $output
      *
-     * @return int|void|null
+     * @return int
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         // If not in dump mode and none receiver is set, exit.
         $this->dumpMode = $input->getOption('dump');
         if (!$this->dumpMode && 0 === count($this->receiver)) {
             $output->writeln('Please add receiver in configuration');
 
-            return 1;
+            return Command::FAILURE;
         }
 
         // Fist, get all failed or potential timeout
@@ -132,7 +134,7 @@ class MonitorCommand extends Command
             }
         }
 
-        return 0;
+        return Command::SUCCESS;
     }
 
     /**
@@ -140,7 +142,7 @@ class MonitorCommand extends Command
      *
      * @param string $message message to be sent
      */
-    private function sendMails($message)
+    private function sendMails($message): string
     {
         // prepare email constants
         $hostname = gethostname();
@@ -158,7 +160,7 @@ class MonitorCommand extends Command
      *
      * @return string subject
      */
-    private function getMailSubject()
+    private function getMailSubject(): string
     {
         $hostname = gethostname();
 

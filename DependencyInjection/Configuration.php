@@ -14,8 +14,9 @@ class Configuration implements ConfigurationInterface
 {
     /**
      * {@inheritdoc}
+     * @return TreeBuilder
      */
-    public function getConfigTreeBuilder()
+    public function getConfigTreeBuilder(): TreeBuilder
     {
         $treeBuilder = new TreeBuilder('jmose_command_scheduler');
         if (method_exists($treeBuilder, 'getRootNode')) {

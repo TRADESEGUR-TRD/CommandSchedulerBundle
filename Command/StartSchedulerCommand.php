@@ -22,8 +22,9 @@ class StartSchedulerCommand extends Command
 
     /**
      * {@inheritdoc}
+     * @return void
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this->setName('scheduler:start')
             ->setDescription('Starts command scheduler')
@@ -32,14 +33,15 @@ class StartSchedulerCommand extends Command
 
     /**
      * {@inheritdoc}
+     * @return int
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         if ($input->getOption('blocking')) {
             $output->writeln(sprintf('<info>%s</info>', 'Starting command scheduler in blocking mode.'));
             $this->scheduler($output->isVerbose() ? $output : new NullOutput(), null);
 
-            return 0;
+            return Command::SUCCESS;
         }
 
         if (!extension_loaded('pcntl')) {
@@ -57,7 +59,7 @@ class StartSchedulerCommand extends Command
 
             $output->writeln(sprintf('<info>%s</info>', 'Command scheduler started in non-blocking mode...'));
 
-            return 0;
+            return Command::SUCCESS;
         }
 
         if (-1 === posix_setsid()) {
@@ -66,10 +68,16 @@ class StartSchedulerCommand extends Command
 
         $this->scheduler(new NullOutput(), $pidFile);
 
-        return 0;
+        return Command::SUCCESS;
     }
 
-    private function scheduler(OutputInterface $output, $pidFile)
+    /**
+     * @param OutputInterface $output
+     * @param $pidFile
+     * @return void
+     * @throws \Symfony\Component\Console\Exception\ExceptionInterface
+     */
+    private function scheduler(OutputInterface $output, $pidFile): void
     {
         $input = new ArrayInput([]);
 

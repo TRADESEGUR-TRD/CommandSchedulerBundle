@@ -20,8 +20,9 @@ class LoadScheduledCommandData implements FixtureInterface
 
     /**
      * {@inheritdoc}
+     * @return void
      */
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager): void
     {
         $this->manager = $manager;
 
@@ -49,10 +50,11 @@ class LoadScheduledCommandData implements FixtureInterface
      * @param bool $disabled
      * @param bool $executeNow
      * @param int  $lastReturnCode
+     * @return void
      */
     protected function createScheduledCommand(
         $name, $command, $arguments, $cronExpression, $logFile, $priority, $lastExecution,
-        $locked = false, $disabled = false, $executeNow = false, $lastReturnCode = null)
+        $locked = false, $disabled = false, $executeNow = false, $lastReturnCode = null): void
     {
         $scheduledCommand = new ScheduledCommand();
         $scheduledCommand

@@ -24,7 +24,7 @@ class DetailController extends BaseController
      *
      * @return Response
      */
-    public function indexAction(ScheduledCommand $scheduledCommand, Form $scheduledCommandForm = null)
+    public function indexAction(ScheduledCommand $scheduledCommand, Form $scheduledCommandForm = null): ?Response
     {
         if (null === $scheduledCommandForm) {
             $scheduledCommandForm = $this->createForm(ScheduledCommandType::class, $scheduledCommand);
@@ -43,7 +43,7 @@ class DetailController extends BaseController
      *
      * @return Response
      */
-    public function initNewScheduledCommandAction()
+    public function initNewScheduledCommandAction(): ?Response
     {
         $scheduledCommand = new ScheduledCommand();
 
@@ -62,7 +62,7 @@ class DetailController extends BaseController
      *
      * @return Response
      */
-    public function initEditScheduledCommandAction($scheduledCommandId)
+    public function initEditScheduledCommandAction($scheduledCommandId): ?Response
     {
         $scheduledCommand = $this->getDoctrineManager()->getRepository(ScheduledCommand::class)
             ->find($scheduledCommandId);
@@ -82,7 +82,7 @@ class DetailController extends BaseController
      *
      * @return Response
      */
-    public function saveAction(Request $request)
+    public function saveAction(Request $request): ?Response
     {
         $entityManager = $this->getDoctrineManager();
 

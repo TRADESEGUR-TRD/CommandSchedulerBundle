@@ -17,17 +17,17 @@ class CommandParser
     /**
      * @var KernelInterface
      */
-    private $kernel;
+    private KernelInterface $kernel;
 
     /**
      * @var array
      */
-    private $excludedNamespaces;
+    private array $excludedNamespaces;
 
     /**
      * @var array
      */
-    private $includedNamespaces;
+    private array $includedNamespaces;
 
     /**
      * CommandParser constructor.
@@ -52,7 +52,7 @@ class CommandParser
      *
      * @return array
      */
-    public function getCommands()
+    public function getCommands(): array
     {
         $application = new Application($this->kernel);
         $application->setAutoExit(false);
@@ -78,7 +78,7 @@ class CommandParser
      *
      * @return array
      */
-    private function extractCommandsFromXML($xml)
+    private function extractCommandsFromXML($xml): array
     {
         if ('' == $xml) {
             return [];
