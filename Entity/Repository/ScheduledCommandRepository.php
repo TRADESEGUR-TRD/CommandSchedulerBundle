@@ -4,6 +4,8 @@ namespace JMose\CommandSchedulerBundle\Entity\Repository;
 
 use Doctrine\DBAL\LockMode;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\TransactionRequiredException;
 use JMose\CommandSchedulerBundle\Entity\ScheduledCommand;
 
 /**
@@ -60,7 +62,7 @@ class ScheduledCommandRepository extends EntityRepository
     /**
      * @param int|bool $lockTimeout
      *
-     * @return array|\JMose\CommandSchedulerBundle\Entity\ScheduledCommand[]
+     * @return array|ScheduledCommand[]
      */
     public function findFailedAndTimeoutCommands($lockTimeout = false): array
     {
@@ -86,10 +88,10 @@ class ScheduledCommandRepository extends EntityRepository
      *
      * @return mixed
      *
-     * @throws \Doctrine\ORM\NonUniqueResultException
-     * @throws \Doctrine\ORM\TransactionRequiredException
+     * @throws NonUniqueResultException
+     * @throws TransactionRequiredException
      */
-    public function getNotLockedCommand(ScheduledCommand $command): ?mixed
+    public function getNotLockedCommand(ScheduledCommand $command): mixed
     {
         $query = $this->createQueryBuilder('command')
             ->where('command.locked = false')
