@@ -2,17 +2,19 @@ services:
     JMose\CommandSchedulerBundle\Controller\DetailController:
         public: true
         autowire: true
-        calls:
-            - [setManagerName, ["%jmose_command_scheduler.doctrine_manager%"]]
-            - [setTranslator, ["@translator"]]
+        arguments:
+            - "@doctrine.orm.entity_manager.abstract"
+            - "@translator"
         tags: [container.service_subscriber]
 
     JMose\CommandSchedulerBundle\Controller\ListController:
         public: true
         autowire: true
+        arguments:
+            - "@doctrine.orm.entity_manager.abstract"
+            - "@translator"
+            - "@request_stack"
         calls:
-            - [setManagerName, ["%jmose_command_scheduler.doctrine_manager%"]]
-            - [setTranslator, ["@translator"]]
             - [setLockTimeout, ["%jmose_command_scheduler.lock_timeout%"]]
         tags: [container.service_subscriber]
 
@@ -29,15 +31,13 @@ services:
 
     JMose\CommandSchedulerBundle\Command\ExecuteCommand:
         arguments:
-            - "@doctrine"
-            - "%jmose_command_scheduler.doctrine_manager%"
+            - "@doctrine.orm.entity_manager.abstract"
             - "%jmose_command_scheduler.log_path%"
         tags: [console.command]
 
     JMose\CommandSchedulerBundle\Command\MonitorCommand:
         arguments:
-            - "@doctrine"
-            - "%jmose_command_scheduler.doctrine_manager%"
+            - "@doctrine.orm.entity_manager.abstract"
             - "%jmose_command_scheduler.lock_timeout%"
             - "%jmose_command_scheduler.monitor_mail%"
             - "%jmose_command_scheduler.monitor_mail_subject%"
@@ -46,8 +46,7 @@ services:
         
     JMose\CommandSchedulerBundle\Command\UnlockCommand:
         arguments:
-            - "@doctrine"
-            - "%jmose_command_scheduler.doctrine_manager%"
+            - "@doctrine.orm.entity_manager.abstract"
             - "%jmose_command_scheduler.lock_timeout%"
         tags: [console.command]
 
