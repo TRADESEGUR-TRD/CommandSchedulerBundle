@@ -19,48 +19,43 @@ class Configuration implements ConfigurationInterface
     public function getConfigTreeBuilder(): TreeBuilder
     {
         $treeBuilder = new TreeBuilder('jmose_command_scheduler');
-        if (method_exists($treeBuilder, 'getRootNode')) {
-            $rootNode = $treeBuilder->getRootNode();
-        } else {
-            // BC layer for symfony/config 4.1 and older
-            $rootNode = $treeBuilder->root('jmose_command_scheduler');
-        }
+        $rootNode = $treeBuilder->getRootNode();
 
         $rootNode
             ->children()
-                ->scalarNode('doctrine_manager')->defaultValue('default')->end()
-                ->scalarNode('log_path')->defaultValue('%kernel.logs_dir%')->end()
-                ->scalarNode('lock_timeout')->defaultValue(false)->end()
-                ->arrayNode('monitor_mail')
-                    ->defaultValue([])
-                    ->prototype('scalar')->end()
-                ->end()
-                ->scalarNode('monitor_mail_subject')->defaultValue('cronjob monitoring %%s, %%s')->end()
-                ->booleanNode('send_ok')->defaultValue(false)->end()
-                ->variableNode('excluded_command_namespaces')
-                    ->defaultValue([])
-                    ->validate()
-                        ->always(function ($value) {
-                            if (is_string($value)) {
-                                return explode(',', $value);
-                            }
+            ->scalarNode('doctrine_manager')->defaultValue('default')->end()
+            ->scalarNode('log_path')->defaultValue('%kernel.logs_dir%')->end()
+            ->scalarNode('lock_timeout')->defaultValue(false)->end()
+            ->arrayNode('monitor_mail')
+            ->defaultValue([])
+            ->prototype('scalar')->end()
+            ->end()
+            ->scalarNode('monitor_mail_subject')->defaultValue('cronjob monitoring %%s, %%s')->end()
+            ->booleanNode('send_ok')->defaultValue(false)->end()
+            ->variableNode('excluded_command_namespaces')
+            ->defaultValue([])
+            ->validate()
+            ->always(function ($value) {
+                if (is_string($value)) {
+                    return explode(',', $value);
+                }
 
-                            return $value;
-                        })
-                    ->end()
-                ->end()
-                ->variableNode('included_command_namespaces')
-                    ->defaultValue([])
-                    ->validate()
-                        ->always(function ($value) {
-                            if (is_string($value)) {
-                                return explode(',', $value);
-                            }
+                return $value;
+            })
+            ->end()
+            ->end()
+            ->variableNode('included_command_namespaces')
+            ->defaultValue([])
+            ->validate()
+            ->always(function ($value) {
+                if (is_string($value)) {
+                    return explode(',', $value);
+                }
 
-                            return $value;
-                        })
-                    ->end()
-                ->end()
+                return $value;
+            })
+            ->end()
+            ->end()
             ->end();
 
         return $treeBuilder;

@@ -2,10 +2,14 @@
 
 namespace JMose\CommandSchedulerBundle\Controller;
 
+use Doctrine\ORM\EntityManagerInterface;
 use JMose\CommandSchedulerBundle\Entity\ScheduledCommand;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Class ListController.
@@ -17,22 +21,27 @@ class ListController extends BaseController
     /**
      * @var string
      */
-    private $lockTimeout;
+    private string $lockTimeout;
+
+    public function __construct(EntityManagerInterface $entityManager, TranslatorInterface $translator, RequestStack $requestStack)
+    {
+        parent::__construct($entityManager, $translator, $requestStack);
+    }
 
     /**
      * @param $lockTimeout string
      */
-    public function setLockTimeout($lockTimeout): void
+    public function setLockTimeout(string $lockTimeout): void
     {
         $this->lockTimeout = $lockTimeout;
     }
 
     /**
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function indexAction(): ?Response
     {
-        $scheduledCommands = $this->getDoctrineManager()->getRepository(
+        $scheduledCommands = $this->entityManager->getRepository(
             'JMoseCommandSchedulerBundle:ScheduledCommand'
         )->findAll();
 
@@ -45,84 +54,80 @@ class ListController extends BaseController
     /**
      * @param $id
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function removeAction($id): ?Response
     {
-        $entityManager = $this->getDoctrineManager();
-        $scheduledCommand = $entityManager->getRepository(ScheduledCommand::class)->find($id);
+        $scheduledCommand = $this->entityManager->getRepository(ScheduledCommand::class)->find($id);
 
-        $entityManager->remove($scheduledCommand);
-        $entityManager->flush();
+        $this->entityManager->remove($scheduledCommand);
+        $this->entityManager->flush();
 
         // Add a flash message and do a redirect to the list
-        $this->get('session')->getFlashBag()
+        $this->requestStack->getSession()->getFlashBag()
             ->add('success', $this->translator->trans('flash.deleted', [], 'JMoseCommandScheduler'));
 
-        return $this->redirect($this->generateUrl('jmose_command_scheduler_list'));
+        return $this->redirectToRoute('jmose_command_scheduler_list');
     }
 
     /**
      * @param $id
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function toggleAction($id): ?Response
     {
-        $entityManager = $this->getDoctrineManager();
-        $scheduledCommand = $entityManager->getRepository(ScheduledCommand::class)->find($id);
+        $scheduledCommand =  $this->entityManager->getRepository(ScheduledCommand::class)->find($id);
         $scheduledCommand->setDisabled(!$scheduledCommand->isDisabled());
-        $entityManager->flush();
+        $this->entityManager->flush();
 
-        return $this->redirect($this->generateUrl('jmose_command_scheduler_list'));
+        return $this->redirectToRoute('jmose_command_scheduler_list');
     }
 
     /**
      * @param $id
      * @param Request $request
      *
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @return RedirectResponse
      */
     public function executeAction($id, Request $request): ?Response
     {
-        $entityManager = $this->getDoctrineManager();
-        $scheduledCommand = $entityManager->getRepository(ScheduledCommand::class)->find($id);
+        $scheduledCommand =  $this->entityManager->getRepository(ScheduledCommand::class)->find($id);
         $scheduledCommand->setExecuteImmediately(true);
-        $entityManager->flush();
+        $this->entityManager->flush();
 
         // Add a flash message and do a redirect to the list
-        $this->get('session')->getFlashBag()
+        $this->requestStack->getSession()->getFlashBag()
             ->add('success', $this->translator->trans('flash.execute', [], 'JMoseCommandScheduler'));
 
         if ($request->query->has('referer')) {
             return $this->redirect($request->getSchemeAndHttpHost().urldecode($request->query->get('referer')));
         }
 
-        return $this->redirect($this->generateUrl('jmose_command_scheduler_list'));
+        return $this->redirectToRoute('jmose_command_scheduler_list');
     }
 
     /**
      * @param $id
      * @param Request $request
      *
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @return RedirectResponse
      */
     public function unlockAction($id, Request $request): ?Response
     {
-        $entityManager = $this->getDoctrineManager();
-        $scheduledCommand = $entityManager->getRepository(ScheduledCommand::class)->find($id);
+        $scheduledCommand =  $this->entityManager->getRepository(ScheduledCommand::class)->find($id);
         $scheduledCommand->setLocked(false);
-        $entityManager->flush();
+        $this->entityManager->flush();
 
         // Add a flash message and do a redirect to the list
-        $this->get('session')->getFlashBag()
+        $this->requestStack->getSession()->getFlashBag()
             ->add('success', $this->translator->trans('flash.unlocked', [], 'JMoseCommandScheduler'));
 
         if ($request->query->has('referer')) {
             return $this->redirect($request->getSchemeAndHttpHost().urldecode($request->query->get('referer')));
         }
 
-        return $this->redirect($this->generateUrl('jmose_command_scheduler_list'));
+        return $this->redirectToRoute('jmose_command_scheduler_list');
     }
 
     /**
@@ -134,7 +139,7 @@ class ListController extends BaseController
      */
     public function monitorAction(): ?JsonResponse
     {
-        $failedCommands = $this->getDoctrineManager()
+        $failedCommands = $this->entityManager
             ->getRepository(ScheduledCommand::class)
             ->findFailedAndTimeoutCommands($this->lockTimeout);
 

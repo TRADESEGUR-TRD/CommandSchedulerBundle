@@ -127,7 +127,7 @@ class ScheduledCommand
      *
      * @return ScheduledCommand
      */
-    public function setName($name): ScheduledCommand
+    public function setName(string $name): ScheduledCommand
     {
         $this->name = $name;
 
@@ -151,7 +151,7 @@ class ScheduledCommand
      *
      * @return ScheduledCommand
      */
-    public function setCommand($command): ScheduledCommand
+    public function setCommand(string $command): ScheduledCommand
     {
         $this->command = $command;
 
@@ -175,7 +175,7 @@ class ScheduledCommand
      *
      * @return ScheduledCommand
      */
-    public function setArguments($arguments): ScheduledCommand
+    public function setArguments(string $arguments): ScheduledCommand
     {
         $this->arguments = $arguments;
 
@@ -199,7 +199,7 @@ class ScheduledCommand
      *
      * @return ScheduledCommand
      */
-    public function setCronExpression($cronExpression): ScheduledCommand
+    public function setCronExpression(string $cronExpression): ScheduledCommand
     {
         $this->cronExpression = $cronExpression;
 
@@ -247,7 +247,7 @@ class ScheduledCommand
      *
      * @return ScheduledCommand
      */
-    public function setLogFile($logFile): ScheduledCommand
+    public function setLogFile(string $logFile): ScheduledCommand
     {
         $this->logFile = $logFile;
 
@@ -271,7 +271,7 @@ class ScheduledCommand
      *
      * @return ScheduledCommand
      */
-    public function setLastReturnCode($lastReturnCode): ScheduledCommand
+    public function setLastReturnCode(int $lastReturnCode): ScheduledCommand
     {
         $this->lastReturnCode = $lastReturnCode;
 
@@ -295,7 +295,7 @@ class ScheduledCommand
      *
      * @return ScheduledCommand
      */
-    public function setPriority($priority): ScheduledCommand
+    public function setPriority(int $priority): ScheduledCommand
     {
         $this->priority = $priority;
 
@@ -363,7 +363,7 @@ class ScheduledCommand
      *
      * @return ScheduledCommand
      */
-    public function setDisabled($disabled): ScheduledCommand
+    public function setDisabled(bool $disabled): ScheduledCommand
     {
         $this->disabled = $disabled;
 
@@ -397,7 +397,7 @@ class ScheduledCommand
      *
      * @return ScheduledCommand
      */
-    public function setLocked($locked): ScheduledCommand
+    public function setLocked(bool $locked): ScheduledCommand
     {
         $this->locked = $locked;
 

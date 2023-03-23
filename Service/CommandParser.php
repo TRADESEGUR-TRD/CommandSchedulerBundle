@@ -2,6 +2,9 @@
 
 namespace JMose\CommandSchedulerBundle\Service;
 
+use Exception;
+use InvalidArgumentException;
+use SimpleXMLElement;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\StreamOutput;
@@ -43,7 +46,7 @@ class CommandParser
         $this->includedNamespaces = $includedNamespaces;
 
         if (count($this->excludedNamespaces) > 0 && count($this->includedNamespaces) > 0) {
-            throw new \InvalidArgumentException('Cannot combine excludedNamespaces with includedNamespaces');
+            throw new InvalidArgumentException('Cannot combine excludedNamespaces with includedNamespaces');
         }
     }
 
@@ -51,6 +54,7 @@ class CommandParser
      * Execute the console command "list" with XML output to have all available command.
      *
      * @return array
+     * @throws Exception
      */
     public function getCommands(): array
     {
@@ -77,6 +81,7 @@ class CommandParser
      * @param $xml
      *
      * @return array
+     * @throws Exception
      */
     private function extractCommandsFromXML($xml): array
     {
@@ -84,7 +89,7 @@ class CommandParser
             return [];
         }
 
-        $node = new \SimpleXMLElement($xml);
+        $node = new SimpleXMLElement($xml);
         $commandsList = [];
 
         foreach ($node->namespaces->namespace as $namespace) {

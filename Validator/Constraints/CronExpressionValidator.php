@@ -3,6 +3,7 @@
 namespace JMose\CommandSchedulerBundle\Validator\Constraints;
 
 use Cron\CronExpression as CronExpressionLib;
+use InvalidArgumentException;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 
@@ -26,8 +27,8 @@ class CronExpressionValidator extends ConstraintValidator
         }
 
         try {
-            CronExpressionLib::factory($value);
-        } catch (\InvalidArgumentException $e) {
+            $cronExpression = new CronExpressionLib($value);
+        } catch (InvalidArgumentException $e) {
             $this->context->addViolation($constraint->message, [], $value);
         }
     }

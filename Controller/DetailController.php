@@ -2,11 +2,14 @@
 
 namespace JMose\CommandSchedulerBundle\Controller;
 
+use Doctrine\ORM\EntityManagerInterface;
 use JMose\CommandSchedulerBundle\Entity\ScheduledCommand;
 use JMose\CommandSchedulerBundle\Form\Type\ScheduledCommandType;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Class DetailController.
@@ -15,12 +18,17 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class DetailController extends BaseController
 {
+    public function __construct(EntityManagerInterface $entityManager, TranslatorInterface $translator, RequestStack $requestStack)
+    {
+        parent::__construct($entityManager, $translator, $requestStack);
+    }
+
     /**
      * Handle display of new/existing ScheduledCommand object.
-     * This action should not be invoke directly.
+     * This action should not be invoked directly.
      *
      * @param ScheduledCommand $scheduledCommand
-     * @param Form             $scheduledCommandForm
+     * @param Form|null $scheduledCommandForm
      *
      * @return Response
      */
@@ -64,7 +72,7 @@ class DetailController extends BaseController
      */
     public function initEditScheduledCommandAction($scheduledCommandId): ?Response
     {
-        $scheduledCommand = $this->getDoctrineManager()->getRepository(ScheduledCommand::class)
+        $scheduledCommand = $this->entityManager->getRepository(ScheduledCommand::class)
             ->find($scheduledCommandId);
 
         return $this->forward(
@@ -84,12 +92,10 @@ class DetailController extends BaseController
      */
     public function saveAction(Request $request): ?Response
     {
-        $entityManager = $this->getDoctrineManager();
-
         // Init and populate form object
         $commandDetail = $request->request->get('command_scheduler_detail');
         if ('' != $commandDetail['id']) {
-            $scheduledCommand = $entityManager->getRepository(ScheduledCommand::class)
+            $scheduledCommand = $this->entityManager->getRepository(ScheduledCommand::class)
                 ->find($commandDetail['id']);
         } else {
             $scheduledCommand = new ScheduledCommand();
@@ -101,15 +107,15 @@ class DetailController extends BaseController
         if ($scheduledCommandForm->isSubmitted() && $scheduledCommandForm->isValid()) {
             // Handle save to the database
             if (null === $scheduledCommand->getId()) {
-                $entityManager->persist($scheduledCommand);
+                $this->entityManager->persist($scheduledCommand);
             }
-            $entityManager->flush();
+            $this->entityManager->flush();
 
             // Add a flash message and do a redirect to the list
-            $this->get('session')->getFlashBag()
+            $this->requestStack->getSession()->getFlashBag()
                 ->add('success', $this->translator->trans('flash.success', [], 'JMoseCommandScheduler'));
 
-            return $this->redirect($this->generateUrl('jmose_command_scheduler_list'));
+            return $this->redirectToRoute('jmose_command_scheduler_list');
         }
 
         // Redirect to indexAction with the form object that has validation errors

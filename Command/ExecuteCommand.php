@@ -3,9 +3,13 @@
 namespace JMose\CommandSchedulerBundle\Command;
 
 use Cron\CronExpression;
+use DateTime;
+use Doctrine\DBAL\Exception;
+use Doctrine\ORM\EntityManagerInterface;
 use JMose\CommandSchedulerBundle\Entity\ScheduledCommand;
 use Symfony\Bridge\Doctrine\ManagerRegistry;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Exception\ExceptionInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\StringInput;
@@ -21,39 +25,38 @@ use Symfony\Component\Console\Output\StreamOutput;
 class ExecuteCommand extends Command
 {
     /**
-     * @var \Doctrine\ORM\EntityManager
+     * @var EntityManagerInterface
      */
-    private $em;
+    private EntityManagerInterface $entityManager;
 
     /**
      * @var string
      */
-    private $logPath;
+    private string $logPath;
 
     /**
      * @var bool
      */
-    private $dumpMode;
+    private bool $dumpMode;
 
     /**
      * @var int
      */
-    private $commandsVerbosity;
+    private int $commandsVerbosity;
 
     /**
      * ExecuteCommand constructor.
      *
-     * @param ManagerRegistry $managerRegistry
-     * @param $managerName
-     * @param $logPath
+     * @param EntityManagerInterface $entityManager
+     * @param string $logPath
      */
-    public function __construct(ManagerRegistry $managerRegistry, $managerName, $logPath)
+    public function __construct(EntityManagerInterface $entityManager, string $logPath)
     {
-        $this->em = $managerRegistry->getManager($managerName);
+        $this->entityManager = $entityManager;
         $this->logPath = $logPath;
 
         // If logpath is not set to false, append the directory separator to it
-        if (false !== $this->logPath) {
+        if ($this->logPath) {
             $this->logPath = rtrim($this->logPath, '/\\').DIRECTORY_SEPARATOR;
         }
 
@@ -94,10 +97,11 @@ class ExecuteCommand extends Command
     }
 
     /**
-     * @param InputInterface  $input
+     * @param InputInterface $input
      * @param OutputInterface $output
      *
      * @return int
+     * @throws \Exception
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
@@ -116,19 +120,19 @@ class ExecuteCommand extends Command
             return Command::FAILURE;
         }
 
-        $commands = $this->em->getRepository(ScheduledCommand::class)->findEnabledCommand();
+        $commands = $this->entityManager->getRepository(ScheduledCommand::class)->findEnabledCommand();
 
         $noneExecution = true;
         foreach ($commands as $command) {
-            $this->em->refresh($this->em->find(ScheduledCommand::class, $command));
+            $this->entityManager->refresh($this->entityManager->find(ScheduledCommand::class, $command));
             if ($command->isDisabled() || $command->isLocked()) {
                 continue;
             }
 
             /** @var ScheduledCommand $command */
-            $cron = CronExpression::factory($command->getCronExpression());
+            $cron = new CronExpression($command->getCronExpression());
             $nextRunDate = $cron->getNextRunDate($command->getLastExecution());
-            $now = new \DateTime();
+            $now = new DateTime();
 
             if ($command->isExecuteImmediately()) {
                 $noneExecution = false;
@@ -162,32 +166,30 @@ class ExecuteCommand extends Command
 
     /**
      * @param ScheduledCommand $scheduledCommand
-     * @param OutputInterface  $output
-     * @param InputInterface   $input
+     * @param OutputInterface $output
+     * @param InputInterface $input
      * @return void
+     * @throws ExceptionInterface
+     * @throws Exception
      */
     private function executeCommand(ScheduledCommand $scheduledCommand, OutputInterface $output, InputInterface $input): void
     {
         //reload command from database before every execution to avoid parallel execution
-        $this->em->getConnection()->beginTransaction();
+        $this->entityManager->getConnection()->beginTransaction();
         try {
             $notLockedCommand = $this
-                ->em
+                ->entityManager
                 ->getRepository(ScheduledCommand::class)
                 ->getNotLockedCommand($scheduledCommand);
-            //$notLockedCommand will be locked for avoiding parallel calls: http://dev.mysql.com/doc/refman/5.7/en/innodb-locking-reads.html
-            if (null === $notLockedCommand) {
-                throw new \Exception();
-            }
 
             $scheduledCommand = $notLockedCommand;
-            $scheduledCommand->setLastExecution(new \DateTime());
+            $scheduledCommand->setLastExecution(new DateTime());
             $scheduledCommand->setLocked(true);
-            $this->em->persist($scheduledCommand);
-            $this->em->flush();
-            $this->em->getConnection()->commit();
+            $this->entityManager->persist($scheduledCommand);
+            $this->entityManager->flush();
+            $this->entityManager->getConnection()->commit();
         } catch (\Exception $e) {
-            $this->em->getConnection()->rollBack();
+            $this->entityManager->getConnection()->rollBack();
             $output->writeln(
                 sprintf(
                     '<error>Command %s is locked %s</error>',
@@ -199,7 +201,7 @@ class ExecuteCommand extends Command
             return;
         }
 
-        $scheduledCommand = $this->em->find(ScheduledCommand::class, $scheduledCommand);
+        $scheduledCommand = $this->entityManager->find(ScheduledCommand::class, $scheduledCommand);
 
         try {
             $command = $this->getApplication()->find($scheduledCommand->getCommand());
@@ -213,7 +215,7 @@ class ExecuteCommand extends Command
         $input = new StringInput(
             $scheduledCommand->getCommand().' '.$scheduledCommand->getArguments().' --env='.$input->getOption('env')
         );
-        $command->mergeApplicationDefinition();
+
         $input->bind($command->getDefinition());
 
         // Disable interactive mode if the current command has no-interaction flag
@@ -222,7 +224,7 @@ class ExecuteCommand extends Command
         }
 
         // Use a StreamOutput or NullOutput to redirect write() and writeln() in a log file
-        if (false === $this->logPath || empty($scheduledCommand->getLogFile())) {
+        if (empty($scheduledCommand->getLogFile())) {
             $logOutput = new NullOutput();
         } else {
             $logOutput = new StreamOutput(
@@ -247,22 +249,21 @@ class ExecuteCommand extends Command
             $result = -1;
         }
 
-        if (false === $this->em->isOpen()) {
+        if (false === $this->entityManager->isOpen()) {
             $output->writeln('<comment>Entity manager closed by the last command.</comment>');
-            $this->em = $this->em->create($this->em->getConnection(), $this->em->getConfiguration());
         }
 
         $scheduledCommand->setLastReturnCode($result);
         $scheduledCommand->setLocked(false);
         $scheduledCommand->setExecuteImmediately(false);
-        $this->em->persist($scheduledCommand);
-        $this->em->flush();
+        $this->entityManager->persist($scheduledCommand);
+        $this->entityManager->flush();
 
         /*
          * This clear() is necessary to avoid conflict between commands and to be sure that none entity are managed
-         * before entering in a new command
+         * before entering a new command
          */
-        $this->em->clear();
+        $this->entityManager->clear();
 
         unset($command);
         gc_collect_cycles();

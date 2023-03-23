@@ -2,6 +2,7 @@
 
 namespace JMose\CommandSchedulerBundle\DependencyInjection;
 
+use Exception;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader;
@@ -16,6 +17,7 @@ class JMoseCommandSchedulerExtension extends Extension
     /**
      * {@inheritdoc}
      * @return void
+     * @throws Exception
      */
     public function load(array $configs, ContainerBuilder $container): void
     {

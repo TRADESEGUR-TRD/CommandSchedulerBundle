@@ -14,5 +14,5 @@ class CronExpression extends Constraint
      *
      * @var string
      */
-    public $message;
+    public string $message;
 }

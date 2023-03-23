@@ -2,6 +2,9 @@
 
 namespace JMose\CommandSchedulerBundle\Command;
 
+use DateInterval;
+use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use JMose\CommandSchedulerBundle\Entity\ScheduledCommand;
 use Symfony\Bridge\Doctrine\ManagerRegistry;
 use Symfony\Component\Console\Command\Command;
@@ -18,40 +21,39 @@ use Symfony\Component\Console\Output\OutputInterface;
 class UnlockCommand extends Command
 {
     /**
-     * @var \Doctrine\ORM\EntityManager
+     * @var EntityManagerInterface
      */
-    private $em;
+    private $entityManager;
 
     /**
      * @var int
      */
-    private $defaultLockTimeout;
+    private int $defaultLockTimeout;
 
     /**
-     * @var int|bool Number of seconds after a command is considered as timeout
+     * @var int Number of seconds after a command is considered as timeout
      */
-    private $lockTimeout;
+    private int $lockTimeout;
 
     /**
      * @var bool true if all locked commands should be unlocked
      */
-    private $unlockAll;
+    private bool $unlockAll;
 
     /**
      * @var string name of the command to be unlocked
      */
-    private $scheduledCommandName = [];
+    private string $scheduledCommandName = '';
 
     /**
      * UnlockCommand constructor.
      *
-     * @param ManagerRegistry $managerRegistry
-     * @param $managerName
-     * @param $lockTimeout
+     * @param EntityManagerInterface $entityManager
+     * @param int $lockTimeout
      */
-    public function __construct(ManagerRegistry $managerRegistry, $managerName, $lockTimeout)
+    public function __construct(EntityManagerInterface $entityManager, int $lockTimeout)
     {
-        $this->em = $managerRegistry->getManager($managerName);
+        $this->entityManager = $entityManager;
         $this->defaultLockTimeout = $lockTimeout;
 
         parent::__construct();
@@ -88,31 +90,25 @@ class UnlockCommand extends Command
         $this->unlockAll = $input->getOption('all');
         $this->scheduledCommandName = $input->getArgument('name');
 
-        $this->lockTimeout = $input->getOption('lock-timeout', null);
-        if (null === $this->lockTimeout) {
-            $this->lockTimeout = $this->defaultLockTimeout;
-        } else {
-            if ('false' === $this->lockTimeout) {
-                $this->lockTimeout = false;
-            }
-        }
+        $this->lockTimeout = $input->hasOption('lock-timeout') ? $input->getOption('lock-timeout', null) : $this->defaultLockTimeout;
     }
 
     /**
-     * @param InputInterface  $input
+     * @param InputInterface $input
      * @param OutputInterface $output
      *
      * @return int
+     * @throws Exception
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        if (false === $this->unlockAll && null === $this->scheduledCommandName) {
+        if (false === $this->unlockAll) {
             $output->writeln('Either the name of a scheduled command or the --all option must be set.');
 
             return Command::FAILURE;
         }
 
-        $repository = $this->em->getRepository(ScheduledCommand::class);
+        $repository = $this->entityManager->getRepository(ScheduledCommand::class);
 
         if (true === $this->unlockAll) {
             $failedCommands = $repository->findLockedCommand();
@@ -134,7 +130,7 @@ class UnlockCommand extends Command
             $this->unlock($scheduledCommand, $output);
         }
 
-        $this->em->flush();
+        $this->entityManager->flush();
 
         return Command::SUCCESS;
     }
@@ -143,6 +139,7 @@ class UnlockCommand extends Command
      * @param ScheduledCommand $command command to be unlocked
      *
      * @return bool true if unlock happened
+     * @throws Exception
      */
     protected function unlock(ScheduledCommand $command, OutputInterface $output): bool
     {
@@ -152,10 +149,9 @@ class UnlockCommand extends Command
             return false;
         }
 
-        if (false !== $this->lockTimeout &&
-            null !== $command->getLastExecution() &&
+        if (null !== $command->getLastExecution() &&
             $command->getLastExecution() >= (new \DateTime())->sub(
-                new \DateInterval(sprintf('PT%dS', $this->lockTimeout))
+                new DateInterval(sprintf('PT%dS', $this->lockTimeout))
             )
         ) {
             $output->writeln(

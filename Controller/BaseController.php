@@ -2,9 +2,10 @@
 
 namespace JMose\CommandSchedulerBundle\Controller;
 
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Translation\TranslatorInterface as ComponentTranslatorInterface;
-use Symfony\Contracts\Translation\TranslatorInterface as ContractsTranslatorInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Class BaseController.
@@ -14,37 +15,24 @@ use Symfony\Contracts\Translation\TranslatorInterface as ContractsTranslatorInte
 abstract class BaseController extends AbstractController
 {
     /**
-     * @var string
+     * @var EntityManagerInterface
      */
-    private string $managerName;
+    protected EntityManagerInterface $entityManager;
 
     /**
-     * @var ContractsTranslatorInterface|ComponentTranslatorInterface
+     * @var TranslatorInterface
      */
     protected TranslatorInterface $translator;
 
     /**
-     * @param $managerName string
-     * @return void
+     * @var RequestStack
      */
-    public function setManagerName($managerName): string
-    {
-        $this->managerName = $managerName;
-    }
+    protected RequestStack $requestStack;
 
-    /**
-     * @param ContractsTranslatorInterface|ComponentTranslatorInterface $translator
-     */
-    public function setTranslator($translator): TranslatorInterface
+    public function __construct(EntityManagerInterface $entityManager, TranslatorInterface $translator, RequestStack $requestStack)
     {
+        $this->entityManager = $entityManager;
         $this->translator = $translator;
-    }
-
-    /**
-     * @return \Doctrine\Common\Persistence\ObjectManager
-     */
-    protected function getDoctrineManager(): ObjectManager
-    {
-        return $this->getDoctrine()->getManager($this->managerName);
+        $this->requestStack = $requestStack;
     }
 }

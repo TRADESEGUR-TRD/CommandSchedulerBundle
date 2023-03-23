@@ -86,12 +86,12 @@ class ScheduledCommandRepository extends EntityRepository
     /**
      * @param ScheduledCommand $command
      *
-     * @return mixed
+     * @return float|int|null|string|mixed
      *
      * @throws NonUniqueResultException
      * @throws TransactionRequiredException
      */
-    public function getNotLockedCommand(ScheduledCommand $command): mixed
+    public function getNotLockedCommand(ScheduledCommand $command): object
     {
         $query = $this->createQueryBuilder('command')
             ->where('command.locked = false')

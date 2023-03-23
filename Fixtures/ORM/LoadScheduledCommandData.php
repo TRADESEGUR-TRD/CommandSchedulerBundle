@@ -2,6 +2,7 @@
 
 namespace JMose\CommandSchedulerBundle\Fixtures\ORM;
 
+use DateTime;
 use Doctrine\Common\DataFixtures\FixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 use JMose\CommandSchedulerBundle\Entity\ScheduledCommand;
@@ -16,7 +17,7 @@ class LoadScheduledCommandData implements FixtureInterface
     /**
      * @var ObjectManager
      */
-    protected $manager;
+    protected ObjectManager $manager;
 
     /**
      * {@inheritdoc}
@@ -24,9 +25,7 @@ class LoadScheduledCommandData implements FixtureInterface
      */
     public function load(ObjectManager $manager): void
     {
-        $this->manager = $manager;
-
-        $now = new \DateTime();
+        $now = new DateTime();
         $today = clone $now;
         $beforeYesterday = $now->modify('-2 days');
 
@@ -49,12 +48,12 @@ class LoadScheduledCommandData implements FixtureInterface
      * @param bool $locked
      * @param bool $disabled
      * @param bool $executeNow
-     * @param int  $lastReturnCode
+     * @param int|null $lastReturnCode
      * @return void
      */
     protected function createScheduledCommand(
         $name, $command, $arguments, $cronExpression, $logFile, $priority, $lastExecution,
-        $locked = false, $disabled = false, $executeNow = false, $lastReturnCode = null): void
+        bool $locked = false, bool $disabled = false, bool $executeNow = false, int $lastReturnCode = null): void
     {
         $scheduledCommand = new ScheduledCommand();
         $scheduledCommand

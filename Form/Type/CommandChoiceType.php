@@ -17,7 +17,7 @@ class CommandChoiceType extends AbstractType
     /**
      * @var CommandParser
      */
-    private $commandParser;
+    private CommandParser $commandParser;
 
     /**
      * @param CommandParser $commandParser
