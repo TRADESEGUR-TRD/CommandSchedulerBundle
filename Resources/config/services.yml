@@ -3,7 +3,7 @@ services:
         public: true
         autowire: true
         arguments:
-            - "@doctrine.orm.entity_manager.abstract"
+            - "@doctrine.orm.entity_manager"
             - "@translator"
         tags: [container.service_subscriber]
 
@@ -11,7 +11,7 @@ services:
         public: true
         autowire: true
         arguments:
-            - "@doctrine.orm.entity_manager.abstract"
+            - "@doctrine.orm.entity_manager"
             - "@translator"
             - "@request_stack"
         calls:
@@ -31,13 +31,13 @@ services:
 
     JMose\CommandSchedulerBundle\Command\ExecuteCommand:
         arguments:
-            - "@doctrine.orm.entity_manager.abstract"
+            - "@doctrine.orm.entity_manager"
             - "%jmose_command_scheduler.log_path%"
         tags: [console.command]
 
     JMose\CommandSchedulerBundle\Command\MonitorCommand:
         arguments:
-            - "@doctrine.orm.entity_manager.abstract"
+            - "@doctrine.orm.entity_manager"
             - "%jmose_command_scheduler.lock_timeout%"
             - "%jmose_command_scheduler.monitor_mail%"
             - "%jmose_command_scheduler.monitor_mail_subject%"
@@ -46,7 +46,7 @@ services:
         
     JMose\CommandSchedulerBundle\Command\UnlockCommand:
         arguments:
-            - "@doctrine.orm.entity_manager.abstract"
+            - "@doctrine.orm.entity_manager"
             - "%jmose_command_scheduler.lock_timeout%"
         tags: [console.command]
 
