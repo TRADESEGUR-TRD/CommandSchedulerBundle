@@ -9,6 +9,14 @@
         {
             "name": "Julien Guyon",
             "email": "julienguyon@hotmail.com"
+        },
+        {
+            "name": "Joaquin Duro",
+            "email": "dual@tradesegur.com"
+        },
+        {
+            "name": "Daniel Peraulet",
+            "email": "pera@tradesegur.com"
         }
     ],
     "require": {
