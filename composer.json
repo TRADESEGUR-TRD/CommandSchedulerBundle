@@ -33,7 +33,6 @@
         "symfony/templating": "^5.3|^5.4",
         "symfony/validator": "^5.3|^5.4",
         "ext-json": "*",
-        "ext-posix": "*",
         "ext-simplexml": "*"
     },
     "require-dev": {
